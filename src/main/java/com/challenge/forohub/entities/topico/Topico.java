@@ -1,5 +1,4 @@
 package com.challenge.forohub.entities.topico;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -20,16 +19,16 @@ public class Topico {
     private Long id;
     private String titulo;
     private String mensage;
-    private Date fecha_creacion;
-    private int status;
+    private Date fecha;
+    private Boolean status;
     private Long autor_id;
     private Long curso_id;
 
     public Topico(DatosRegistroTopico datos) {
         this.titulo = datos.titulo();
         this.mensage = datos.mensage();
-        this.fecha_creacion = new Date();
-        this.status = 1;
+        this.fecha = new Date();
+        this.status = true;
         this.autor_id = datos.autor_id();
         this.curso_id = datos.curso_id();
     }

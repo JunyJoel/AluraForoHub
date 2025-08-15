@@ -1,6 +1,6 @@
 package com.challenge.forohub.controllers;
 
-import com.challenge.forohub.entities.usuario.DatosAutenticacionUsuario;
+/*import com.challenge.forohub.entities.usuario.DatosAutenticacionUsuario;
 import com.challenge.forohub.infra.security.DatosTokenJWT;
 import com.challenge.forohub.infra.security.TokenService;
 import jakarta.validation.Valid;
@@ -10,15 +10,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;*/
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-//@RestController
-//@RequestMapping("/login")
+@RestController
+@RequestMapping("/login")
 public class AuthenticationController {
-    @Autowired
+    /*@Autowired
     private TokenService tokenService;
     @Autowired
     private AuthenticationManager manager;
@@ -51,5 +51,5 @@ public class AuthenticationController {
     @PostMapping("/test")
     public void test() {
         System.out.println("test");
-    }
+    }*/
 }

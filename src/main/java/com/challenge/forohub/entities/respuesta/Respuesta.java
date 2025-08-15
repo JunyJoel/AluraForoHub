@@ -1,16 +1,13 @@
 package com.challenge.forohub.entities.respuesta;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+//import jakarta.persistence.*;
 
 import java.util.Date;
 
-@Entity
+//@Entity
 public class Respuesta {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String mensage;
     private Date fecha_creacion;
