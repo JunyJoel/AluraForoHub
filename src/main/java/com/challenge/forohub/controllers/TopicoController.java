@@ -28,7 +28,6 @@ public class TopicoController {
     @PostMapping
     @Transactional
     public ResponseEntity registrarTopico(@RequestBody @Valid DatosRegistroTopico datos) {
-        System.out.println("Topico Controller is working...");
         var topicoNuevo = new Topico(datos);
         if (topicoRepository.findByTitulo(topicoNuevo.getTitulo()).isPresent()) throw new ValidationException("El topico ya existe");
         topicoRepository.save(topicoNuevo);
@@ -39,11 +38,9 @@ public class TopicoController {
     public ResponseEntity<Page<DatosListaTopico>> listarTopicos(@PageableDefault(size =10, sort = "fecha") Pageable pageable) {
         var page = topicoRepository.findAllByStatusTrue(pageable)
                 .map(topico -> {
-                    // Fetch additional data
                     String autorNombre = usuarioRepository.findById(topico.getAutor_id())
                             .map(Usuario::getNombre)
                             .orElse("Desconocido");
-                    // Build DTO with extra info (you may need to modify your DTO)
                     String cursoNombre = cursoRepository.findById(topico.getCurso_id())
                             .map(Curso::getNombre)
                             .orElse("Desconocido");
@@ -58,11 +55,9 @@ public class TopicoController {
 
         var topicoSolo = topicoRepository.findById(id)
                 .map(topico -> {
-                    // Fetch additional data
                     String autorNombre = usuarioRepository.findById(topico.getAutor_id())
                             .map(Usuario::getNombre)
                             .orElse("Desconocido");
-                    // Build DTO with extra info (you may need to modify your DTO)
                     String cursoNombre = cursoRepository.findById(topico.getCurso_id())
                             .map(Curso::getNombre)
                             .orElse("Desconocido");
@@ -80,17 +75,15 @@ public class TopicoController {
         //verificar que el usuario exista en la DB
         if (!usuarioRepository.findByNombre(datos.usuarioLoggeado()).isPresent()) throw new ValidationException("El usuario no existe en DB");
         //verificar que el autor del topico sea el mismo que el usuario loggeado
-        var usuarioLoggeadoId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId();//obtener Id del usuario loggeado con el nombre
-        if (!topicoRepository.findById(id).get().getAutor_id().equals(usuarioLoggeadoId)) throw new ValidationException("Acceso denegado...\n\n...El topico solo lo puede modificar el usuario que lo creo ");
+        var usuarioLoggeadoId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId();//obtener Id del usuario loggeado a partir del nombre
+        if (!topicoRepository.findById(id).get().getAutor_id().equals(usuarioLoggeadoId)) throw new ValidationException("Acceso denegado...\n\n...El topico solo lo puede modificar el usuario que lo creo.");
 
-
-        var autorId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId();
-        var cursoId = cursoRepository.findByNombre(datos.curso()).get().getId();
+        //obtener datos correctos para generar el topico y actualizar
+        var autorId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId(); //obtener Id del usuario loggeado
+        var cursoId = cursoRepository.findByNombre(datos.curso()).get().getId(); //obtener Id del curso seleccionado
         var topico = topicoRepository.findById(id).get();
         topico.actualizarTopico(datos, autorId, cursoId);
-        var topicoActualizado = topicoRepository.findById(id).get();
-        //topicoRepository.save(topicoActualizado);
-        return ResponseEntity.ok(topicoActualizado);
+        return ResponseEntity.ok(topico);
     }
 
     @Transactional

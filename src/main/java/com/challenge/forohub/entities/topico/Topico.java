@@ -1,4 +1,5 @@
 package com.challenge.forohub.entities.topico;
+
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,8 +25,6 @@ public class Topico {
     private Boolean status;
     private Long autor_id;
     private Long curso_id;
-
-
 
     public Topico(DatosRegistroTopico datos) {
         this.titulo = datos.titulo();
