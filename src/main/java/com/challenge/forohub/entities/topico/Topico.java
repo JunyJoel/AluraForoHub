@@ -1,5 +1,6 @@
 package com.challenge.forohub.entities.topico;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class Topico {
     private Long autor_id;
     private Long curso_id;
 
+
+
     public Topico(DatosRegistroTopico datos) {
         this.titulo = datos.titulo();
         this.mensage = datos.mensage();
@@ -31,5 +34,15 @@ public class Topico {
         this.status = true;
         this.autor_id = datos.autor_id();
         this.curso_id = datos.curso_id();
+    }
+
+    public void actualizarTopico(@Valid DatosActualizacionTopico datos, Long autor, Long curso) {
+        if (datos.titulo() != null) this.titulo = datos.titulo();
+        if (datos.mensage() != null) this.mensage = datos.mensage();
+        if (curso != null) this.curso_id = curso;
+    }
+
+    public void eliminarTopico() {
+        this.status = false;
     }
 }

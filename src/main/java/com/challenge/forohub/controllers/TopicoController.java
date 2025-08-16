@@ -3,10 +3,7 @@ package com.challenge.forohub.controllers;
 import com.challenge.forohub.entities.ValidationException;
 import com.challenge.forohub.entities.curso.Curso;
 import com.challenge.forohub.entities.curso.CursoRepository;
-import com.challenge.forohub.entities.topico.DatosRegistroTopico;
-import com.challenge.forohub.entities.topico.DatosListaTopico;
-import com.challenge.forohub.entities.topico.Topico;
-import com.challenge.forohub.entities.topico.TopicoRepository;
+import com.challenge.forohub.entities.topico.*;
 import com.challenge.forohub.entities.usuario.Usuario;
 import com.challenge.forohub.entities.usuario.UsuarioRepository;
 import jakarta.validation.Valid;
@@ -53,6 +50,57 @@ public class TopicoController {
                     return new DatosListaTopico(topico, autorNombre, cursoNombre);
                 });
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosListaTopico> listarTopicoPorId(@PathVariable Long id) {
+        if (!topicoRepository.existsById(id)) throw new ValidationException("El topico no existe");
+
+        var topicoSolo = topicoRepository.findById(id)
+                .map(topico -> {
+                    // Fetch additional data
+                    String autorNombre = usuarioRepository.findById(topico.getAutor_id())
+                            .map(Usuario::getNombre)
+                            .orElse("Desconocido");
+                    // Build DTO with extra info (you may need to modify your DTO)
+                    String cursoNombre = cursoRepository.findById(topico.getCurso_id())
+                            .map(Curso::getNombre)
+                            .orElse("Desconocido");
+                    return new DatosListaTopico(topico, autorNombre, cursoNombre);
+                })
+                .orElse(null);
+        return ResponseEntity.ok(topicoSolo);
+    }
+
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity actualizarTopico(@PathVariable Long id, @RequestBody @Valid DatosActualizacionTopico datos) {
+        //verificar que existe el registro segun el id
+        if (!topicoRepository.existsById(id)) throw new ValidationException("El topico no existe");
+        //verificar que el usuario exista en la DB
+        if (!usuarioRepository.findByNombre(datos.usuarioLoggeado()).isPresent()) throw new ValidationException("El usuario no existe en DB");
+        //verificar que el autor del topico sea el mismo que el usuario loggeado
+        var usuarioLoggeadoId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId();//obtener Id del usuario loggeado con el nombre
+        if (!topicoRepository.findById(id).get().getAutor_id().equals(usuarioLoggeadoId)) throw new ValidationException("Acceso denegado...\n\n...El topico solo lo puede modificar el usuario que lo creo ");
+
+
+        var autorId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId();
+        var cursoId = cursoRepository.findByNombre(datos.curso()).get().getId();
+        var topico = topicoRepository.findById(id).get();
+        topico.actualizarTopico(datos, autorId, cursoId);
+        var topicoActualizado = topicoRepository.findById(id).get();
+        //topicoRepository.save(topicoActualizado);
+        return ResponseEntity.ok(topicoActualizado);
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity eliminarTopico(@PathVariable Long id) {
+        //verificar que existe el registro segun el id
+        if (!topicoRepository.existsById(id)) throw new ValidationException("El topico no existe");
+        var topico = topicoRepository.findById(id).get();
+        topico.eliminarTopico();
+        return ResponseEntity.ok(topico);
     }
 
 }

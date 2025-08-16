@@ -12,7 +12,9 @@ public record DatosListaTopico(Long id,
                                Boolean status,
                                String autor,
                                String curso) {
+
     public DatosListaTopico(Topico topico, String autor, String curso) {
+
         this(topico.getId(), topico.getTitulo(), topico.getMensage(),topico.getFecha(), topico.getStatus(), autor, curso);
     }
 }
