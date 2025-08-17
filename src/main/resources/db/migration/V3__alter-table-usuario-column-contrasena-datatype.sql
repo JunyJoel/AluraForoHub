@@ -1,0 +1,1 @@
+ALTER TABLE usuarios MODIFY COLUMN contrasena varchar(255) not null;

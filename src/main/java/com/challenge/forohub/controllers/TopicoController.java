@@ -73,13 +73,13 @@ public class TopicoController {
         //verificar que existe el registro segun el id
         if (!topicoRepository.existsById(id)) throw new ValidationException("El topico no existe");
         //verificar que el usuario exista en la DB
-        if (!usuarioRepository.findByNombre(datos.usuarioLoggeado()).isPresent()) throw new ValidationException("El usuario no existe en DB");
+        if (!usuarioRepository.existsByNombre(datos.usuarioLoggeado())) throw new ValidationException("El usuario no existe en DB");
         //verificar que el autor del topico sea el mismo que el usuario loggeado
-        var usuarioLoggeadoId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId();//obtener Id del usuario loggeado a partir del nombre
+        var usuarioLoggeadoId = usuarioRepository.findIdByNombre(datos.usuarioLoggeado());//obtener Id del usuario loggeado a partir del nombre
         if (!topicoRepository.findById(id).get().getAutor_id().equals(usuarioLoggeadoId)) throw new ValidationException("Acceso denegado...\n\n...El topico solo lo puede modificar el usuario que lo creo.");
 
         //obtener datos correctos para generar el topico y actualizar
-        var autorId = usuarioRepository.findByNombre(datos.usuarioLoggeado()).get().getId(); //obtener Id del usuario loggeado
+        var autorId = usuarioRepository.findIdByNombre(datos.usuarioLoggeado()); //obtener Id del usuario loggeado
         var cursoId = cursoRepository.findByNombre(datos.curso()).get().getId(); //obtener Id del curso seleccionado
         var topico = topicoRepository.findById(id).get();
         topico.actualizarTopico(datos, autorId, cursoId);

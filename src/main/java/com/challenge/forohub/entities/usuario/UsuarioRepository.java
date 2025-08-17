@@ -1,8 +1,14 @@
 package com.challenge.forohub.entities.usuario;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional<Usuario> findByNombre(String s);
+    UserDetails findByNombre(String nombreUsuario);
+
+    boolean existsByNombre(String usuarioLoggeado);
+
+    Long findIdByNombre(String usuarioLoggeadoId);
 }
